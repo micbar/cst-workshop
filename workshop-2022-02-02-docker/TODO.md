@@ -78,6 +78,11 @@
 
 - try to access oCIS from the different interface / ip in the browser, which should work now.
 
+## oCIS version / services
+
+- shell into the container
+- run `ocis version` to see all running services / versions
+
 ## If you still got time
 
 - Start this docker-compose https://owncloud.dev/ocis/deployment/ocis_traefik/ / https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_traefik. If you do it on a Hetzner VM, get valid SSL certificates.
