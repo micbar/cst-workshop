@@ -1,5 +1,7 @@
 # Discover oCIS with docker
 
+Hint: depending on your docker installation you may have to use `docker compose` instead of `docker-compose`.
+
 ## start the docker-compose stack
 - `docker-compose up -d`
 - look a the logs `docker-compose logs -f`
