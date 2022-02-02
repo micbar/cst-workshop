@@ -1,0 +1,64 @@
+version: "3.7"
+
+services:
+  ocis:
+    image: owncloud/ocis:latest@sha256:977ed81efa40f91a0848b2968d38d6dfec073a287021e1fc62a2f16842821528
+    # the latest tag is not recommended, because you don't know which version you'll get
+    # but even if you use `owncloud/ocis:1.16.0` you cannot be sure that you'll get
+    # the exact same image if you pull it at a later point in time (because docker image tags are not immutable).
+    # To be 100% that you always get the same image, you can pin the digest (hash) of the
+    # image. If you do a `docker pull owncloud/ocis:latest`, it also will also show you the digest.
+    # see also https://docs.docker.com/engine/reference/commandline/images/#list-image-digests
+
+    environment:
+      # INSECURE: needed if oCIS / Traefik is using self generated certificates
+      OCIS_INSECURE: "true"
+
+      # OCIS_URL: the external domain / ip address of oCIS (with protocol, must always be https)
+      OCIS_URL: "https://localhost:9200" # or whatever different domain / ip you got here...
+
+      # OCIS_LOG_LEVEL: error / info / ... / debug
+      OCIS_LOG_LEVEL: info
+
+      # https://owncloud.dev/ocis/deployment/#delete-demo-users
+      # disable the creation of demo users and groups
+      ACCOUNTS_DEMO_USERS_AND_GROUPS: false
+
+      # https://owncloud.dev/ocis/deployment/#change-default-secrets
+      # change the default secrets
+      OCIS_JWT_SECRET: random123
+      STORAGE_TRANSFER_SECRET: random456
+      OCIS_MACHINE_AUTH_API_KEY: random 789
+      STORAGE_LDAP_BIND_PASSWORD: foobar # you also must run `ocis accounts update --password foobar bc596f3c-c955-4328-80a0-60d018b4ad57`
+      IDP_LDAP_BIND_PASSWORD: loremipsum # you also must run `ocis accounts update --password loremipsum 820ba2a1-3f54-4538-80a4-2d73007e30bf`
+
+    volumes:
+      # short syntax for using a named volume
+      # in the form <volume name>:<mount path in the container>
+      - "ocisdata:/var/lib/ocis"
+      # or the more verbose syntax
+      #- type: volume
+      #  source: ocisdata # name of the volume
+      #  target: /var/lib/ocis # the mount path inside the container
+
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
+    restart: always # or on-failure / unless-stopped
+
+    # https://docs.docker.com/config/containers/logging/configure/
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#logging
+    # the default log driver does no log rotation
+    # you can switch to the "local" log driver which does rotation by default
+    logging:
+      driver: local
+    # otherwise you could specify log rotation exlicitely
+    #  driver: "json-file" # this is the default driver
+    #  options:
+    #    max-size: "200k" # limit the size of the log file
+    #    max-file: "10" # limit the count of the log files
+
+
+# https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes
+# this declares the named volume with all default settings
+# you can also see the volume when running `docker volume list`
+volumes:
+  ocisdata:
