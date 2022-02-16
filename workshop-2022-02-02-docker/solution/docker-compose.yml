@@ -55,6 +55,8 @@ services:
     #  options:
     #    max-size: "200k" # limit the size of the log file
     #    max-file: "10" # limit the count of the log files
+    ports:
+      - 9200:9200
 
 
 # https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes
