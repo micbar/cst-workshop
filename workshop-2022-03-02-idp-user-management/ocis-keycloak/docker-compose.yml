@@ -105,12 +105,7 @@ services:
     image: quay.io/keycloak/keycloak:legacy
     networks:
       ocis-net:
-    entrypoint: ["/bin/sh", "/opt/jboss/tools/docker-entrypoint-override.sh"]
-    volumes:
-      - ./config/keycloak/docker-entrypoint-override.sh:/opt/jboss/tools/docker-entrypoint-override.sh
-      - ./config/keycloak/ocis-realm.dist.json:/opt/jboss/keycloak/ocis-realm.dist.json
     environment:
-      OCIS_DOMAIN: ${OCIS_DOMAIN:-ocis.owncloud.test}
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
       DB_DATABASE: keycloak
@@ -120,7 +115,6 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_ADMIN_USER:-admin}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       PROXY_ADDRESS_FORWARDING: "true"
-      KEYCLOAK_IMPORT: /opt/jboss/keycloak/ocis-realm.json
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.entrypoints=https"
