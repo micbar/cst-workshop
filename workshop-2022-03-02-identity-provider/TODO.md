@@ -82,7 +82,7 @@ Work on these topics as a group:
     - use the oCIS url
     - username: admin
     - password: #TODO:
-  - cd to /opt/..... #TODO:
+  - cd to /opt/cst-workshop/workshop-2022-03-02-identity-provider/ocis-keycloak
   - exec into the oCIS container: `docker-compose exec ocis sh`
   - use accounts cli to list and inspect users (especially the user you originally created in Keycloak)
 
