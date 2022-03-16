@@ -12,6 +12,9 @@ Work on these topics as a group of ~3 people:
     - group 5: https://keycloak.group-5.oidc-cst-workshop.owncloud.works
     - group 6: https://keycloak.group-6.oidc-cst-workshop.owncloud.works
     - group 7: https://keycloak.group-7.oidc-cst-workshop.owncloud.works
+    - group 8: https://keycloak.group-8.oidc-cst-workshop.owncloud.works
+    - group 9: https://keycloak.group-9.oidc-cst-workshop.owncloud.works
+    - group 10: https://keycloak.group-10.oidc-cst-workshop.owncloud.works
 
 - create a new realm called "ocis"
     - Read: what is a realm, https://www.keycloak.org/docs/latest/server_admin/#configuring-realms
@@ -70,6 +73,9 @@ Work on these topics as a group of ~3 people:
     - group 5: https://ocis.group-5.oidc-cst-workshop.owncloud.works
     - group 6: https://ocis.group-6.oidc-cst-workshop.owncloud.works
     - group 7: https://ocis.group-7.oidc-cst-workshop.owncloud.works
+    - group 8: https://ocis.group-8.oidc-cst-workshop.owncloud.works
+    - group 9: https://ocis.group-9.oidc-cst-workshop.owncloud.works
+    - group 10: https://ocis.group-10.oidc-cst-workshop.owncloud.works
 
   - you'll see an blue screen (and a failing `.../auth/realms/ocis/.well-known/openid-configuration` request), because we didn't set up an client for ownCloud Web yet. But we will do it in the next steps
 
