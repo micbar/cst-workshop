@@ -1,4 +1,4 @@
-Work on these topics as a group:
+Work on these topics as a group of ~3 people:
 
 - log into the Keycloak management UI
   - credentials:
@@ -6,7 +6,12 @@ Work on these topics as a group:
     - password: cst-workshop
   - Keycloak urls:
     - group 1: https://keycloak.group-1.oidc-cst-workshop.owncloud.works
-    - #TODO: add more groups
+    - group 2: https://keycloak.group-2.oidc-cst-workshop.owncloud.works
+    - group 3: https://keycloak.group-3.oidc-cst-workshop.owncloud.works
+    - group 4: https://keycloak.group-4.oidc-cst-workshop.owncloud.works
+    - group 5: https://keycloak.group-5.oidc-cst-workshop.owncloud.works
+    - group 6: https://keycloak.group-6.oidc-cst-workshop.owncloud.works
+    - group 7: https://keycloak.group-7.oidc-cst-workshop.owncloud.works
 
 - create a new realm called "ocis"
     - Read: what is a realm, https://www.keycloak.org/docs/latest/server_admin/#configuring-realms
@@ -51,22 +56,27 @@ Work on these topics as a group:
   - you'll get an json response containing a access token
 
   - inspect that access token on https://jwt.io
-  - HINT: don't paste production tokens anywhere because others could access them to access your data
+  - HINT: don't paste production tokens anywhere because others can use them to access your data
 
-  - HINT: if you try the login flow a second time, you won't be asked for a password anymore. This is because your user already has an active session. You can log out by navigating to your Keycloak url + "/auth/realms/ocis/account/" and clicking "sign out" in the top right corner. Alternatively navigate to the user as an Keycloak admin and log out all sessions of the user in the "sessions" tab
+  - HINT: if you try the login flow a second time, you won't be asked for a password anymore. This is because your user already has an active session. You can log out by navigating to your Keycloak url + "/auth/realms/ocis/account/" and clicking "sign out" in the top right corner. Alternatively navigate to the user as a Keycloak admin and log out all sessions of the user in the "sessions" tab
 
 
 - access oCIS / ownCloud Web by browsing to:
   - oCIS urls:
-    - Group 1: https://ocis.group-1.oidc-cst-workshop.owncloud.works
-    - #TODO: add more groups
+    - group 1: https://ocis.group-1.oidc-cst-workshop.owncloud.works
+    - group 2: https://ocis.group-2.oidc-cst-workshop.owncloud.works
+    - group 3: https://ocis.group-3.oidc-cst-workshop.owncloud.works
+    - group 4: https://ocis.group-4.oidc-cst-workshop.owncloud.works
+    - group 5: https://ocis.group-5.oidc-cst-workshop.owncloud.works
+    - group 6: https://ocis.group-6.oidc-cst-workshop.owncloud.works
+    - group 7: https://ocis.group-7.oidc-cst-workshop.owncloud.works
 
-  - you'll see an error message, because we didn't set up an client for ownCloud Web yet. But we will do it in the next steps
+  - you'll see an blue screen (and a failing `.../auth/realms/ocis/.well-known/openid-configuration` request), because we didn't set up an client for ownCloud Web yet. But we will do it in the next steps
 
 - import following clients into the ocis realm:
   - download them from here: https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_keycloak/config/keycloak/clients
   - ownCloud Web
-    - ensure the right root url!
+    - ensure the right root url
     - ensure to replace all "https://ocis.owncloud.test" occurrences in the client (and don't miss the "Save" button on the bottom of the page)
   - Desktop Client
   - Android Client
@@ -75,14 +85,14 @@ Work on these topics as a group:
 - log into oCIS / ownCloud Web by browsing to the respective oCIS url
   - check if it worked
   - try to share a file with a colleague from your group
-  - HINT: users are only available after the first login
+  - HINT: users are only available in oCIS after their first usage of oCIS, because we auto-provision the users from the OIDC provider during the first usage. If we had setup an LDAP too, one could query users independently if they already used oCIS or not.
 
 - list user accounts in ocis:
   - ssh onto the server
     - use the oCIS url
     - username: admin
-    - password: #TODO:
-  - cd to /opt/cst-workshop/workshop-2022-03-02-identity-provider/ocis-keycloak
+    - password: see workshop chat / Miro board:
+  - cd to `/opt/cst-workshop/workshop-2022-03-16-identity-provider/ocis-keycloak`
   - exec into the oCIS container: `docker-compose exec ocis sh`
   - use accounts cli to list and inspect users (especially the user you originally created in Keycloak)
 
@@ -102,7 +112,7 @@ Work on these topics as a group:
   - as Keycloak admin go to the users page and klick "Impersonate"
   - open oCIS -> you should be logged in as the impersonated user
   - question: how does this work?
-  - questions: does oCIS need to know about this?
+  - question: does oCIS need to know about this?
 
 - check available session timeouts for:
   - a single client
