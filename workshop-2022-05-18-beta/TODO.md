@@ -1,4 +1,4 @@
-# Discover oCIS with docker
+# Discover oCIS 2.0.0-beta1 with docker
 
 Hint: depending on your docker installation you may have to use `docker compose` instead of `docker-compose`.
 
@@ -57,11 +57,20 @@ Hint: depending on your docker installation you may have to use `docker compose`
 
 ## oCIS demo users
 
-Are not created anymore by default
+Demo users are not created anymore by default. They can only be created once during the first startup when running ocis with `IDM_CREATE_DEMO_USERS=true`.
 
 ## Secrets
 
-Take a look
+Examine the content of the ocis config file in `/etc/ocis/ocis.yaml` via `docker-compose exec ocis cat /etc/ocis/ocis.yaml`.
+
+## Switch on the new audit service in a separate container
+
+- add the ocis audit service and run `docker-compose up -d`
+- check that the audit service runs
+- add a bind mount from a local folder on the host into the container with the audit service to store the audit.log
+- configure the audit service to log to a file
+- configure the audit service to start after the ocis nats service is healthy (tip: use the docker-compose healthcheck feature together with ocis subcommands)
+- watch the audit.log file on the host with `tail -f ...` while doing some actions in ocis
 
 ## change domain name / ip address where you can reach oCIS
 
@@ -71,12 +80,10 @@ Take a look
   - you'll get a white page (next oC Web version will show an error) or will be redirected to your configured domain because you accessed the web UI from a different url than provided in `OCIS_URL`
 
 - change the `OCIS_URL` to the ip / domain name you tried to access oCIS from
-  - after doing so shell into the container and look at the file `/var/lib/ocis/idp/identifier-registration.yaml`, what does it do?
-  - Delete the file, because it be recreated if it doesn't exist and therefore will pick up your domain / ip change from `OCIS_URL` automatically. Otherwise you could manually change your domain /ip in that file
-  - restart oCIS by running `docker-compose restart`
-  - If you didn't change / delete the file you will see an error `Unexpected HTTP response: 400. Please check your connection and try again.` on the login screen.
-
+- Currently you will lose your data because if you change the IdP it is a different user for ocis. Needs to be fixed.
+- Workaround `docker-compose down -v` (-v flag deletes all persistent volumes) and `docker-compose up -d`
 - try to access oCIS from the different interface / ip in the browser, which should work now.
+- If you like, Join the iOS Testflight and test the new spaces feature on iOS.
 
 ## oCIS version / services
 

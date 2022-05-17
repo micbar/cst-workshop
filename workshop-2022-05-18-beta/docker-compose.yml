@@ -12,3 +12,9 @@ services:
 
       # OCIS_LOG_LEVEL: error / info / ... / debug
       OCIS_LOG_LEVEL: info
+  # start a second ocis in a separate container with only the audit service
+  # ocis-audit:
+    # image: owncloud/ocis:latest
+    # entrypoint:
+    #   - /bin/sh
+    # command: ["-c", "ocis audit server"]
