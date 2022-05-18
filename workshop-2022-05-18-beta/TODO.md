@@ -3,23 +3,27 @@
 Hint: depending on your docker installation you may have to use `docker compose` instead of `docker-compose`.
 
 ## start the docker-compose stack
+
 - `docker-compose up -d`
 - look a the logs `docker-compose logs -f`
 - change the log level and apply using `docker-compose up -d`
 - look again at the logs
 
 ## ocis doesn't start
+
 - ocis has been secured for the public beta phase
 - ocis refuses to start without changing all secrets
 - the ocis init command has been created [ocis init](https://owncloud.dev/ocis/getting-started/)
 - change the docker-compose.yml that ocis starts and use your own admin password
 
 ## ports
+
 - expose the port 9200 from the oCIS container to your local machine port 9200
-- open https://localhost:9200 in you browser
+- open <https://localhost:9200> in you browser
 - play around with the oCIS, you can create more users, work with spaces and share resources
 
 ## volumes / persistence
+
 - look at the running containers `docker-compose ps`
 - take the name of the container and pass it to `docker inspect <name>`, look what information you can get from there, ask if you got questions
 
@@ -36,7 +40,7 @@ Hint: depending on your docker installation you may have to use `docker compose`
   - did it change?
   - is your stuff which you previously uploaded to oCIS still there?
 
-- add persistence by adding a named volume to the service (https://docs.docker.com/storage/volumes)
+- add persistence by adding a named volume to the service (<https://docs.docker.com/storage/volumes>)
   - therefore look where the anonymous volume was mounted previously
 
 - check, that your data now survives a `docker-compose down` and `docker-compose up -d`
@@ -45,7 +49,7 @@ Hint: depending on your docker installation you may have to use `docker compose`
 
 - the docker-compose stack currently would not survive a reboot of the docker host or even a restart of the docker daemon. How can you ensure this? (you can test without rebooting by just restarting the docker daemon eg `systemctl restart docker`)
 
-- read about logging https://docs.docker.com/config/containers/logging/configure / https://docs.docker.com/compose/compose-file/compose-file-v3/#logging and ensure log rotation for the oCIS container (in the docker-compose file, no docker daemon configuration)
+- read about logging <https://docs.docker.com/config/containers/logging/configure> / <https://docs.docker.com/compose/compose-file/compose-file-v3/#logging> and ensure log rotation for the oCIS container (in the docker-compose file, no docker daemon configuration)
 
 ## update images
 
@@ -92,4 +96,4 @@ Examine the content of the ocis config file in `/etc/ocis/ocis.yaml` via `docker
 
 ## If you still got time
 
-- Start this docker-compose https://owncloud.dev/ocis/deployment/ocis_traefik/ / https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_traefik. If you do it on a Hetzner VM, get valid SSL certificates.
+- Start this docker-compose <https://owncloud.dev/ocis/deployment/ocis_traefik/> / <https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_traefik>. If you do it on a Hetzner VM, get valid SSL certificates.
