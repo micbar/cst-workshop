@@ -6,14 +6,14 @@ services:
     image: minio/minio:latest
     entrypoint:
       - /bin/sh
-    command:  ["-c", "mkdir -p /data/ocis-bucket && minio server --console-address ':9001' /data"]
+    command:  ["-c", "mkdir -p /data/ocis-bucket && minio server /data"]
     volumes:
       - minio-data:/data
     environment:
       MINIO_ACCESS_KEY: ocis
       MINIO_SECRET_KEY: ocis-secret-key
     ports:
-      - 127.0.0.1:9001:9001
+      - 127.0.0.1:9000:9000
     logging:
       driver: "local"
     restart: always
