@@ -1,0 +1,19 @@
+---
+version: "3.7"
+
+services:
+  nfs:
+    image: itsthenetwork/nfs-server-alpine:12
+    privileged: true
+    environment:
+      - SHARED_DIRECTORY=/data
+    volumes:
+      - nfs-data:/data
+    ports:
+      - 127.0.0.1:2049:2049
+    logging:
+      driver: "local"
+    restart: always
+
+volumes:
+  nfs-data:
