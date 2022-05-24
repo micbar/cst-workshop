@@ -4,7 +4,13 @@ Work on these topics as a group of ~3 people:
   - ssh commands:
     - group 1: `ssh admin@xxx`
 
-- run oCIS with oCIS file system on local disk
+- run oCIS 2.0.0-beta2 with oCIS file system on local disk, see https://owncloud.dev/ocis/getting-started/#binaries
+- set OCIS_URL=`https://xxx`
+- `export IDM_ADMIN_PASSWORD=admin` if you want to set the initial admin password to `admin`
+- `export PROXY_HTTP_ADDR=0.0.0.0:443`
+- `sudo setcap CAP_NET_BIND_SERVICE=+eip ./ocis`
+- `sudo ufw allow https`
+- `./ocis init`
 - create custom users, upload data, create spaces
 
 - start nfs server
