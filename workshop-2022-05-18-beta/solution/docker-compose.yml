@@ -1,0 +1,92 @@
+version: "3.7"
+
+services:
+  ocis:
+    image: owncloud/ocis:latest
+    environment:
+      # INSECURE: needed if oCIS / Traefik is using self generated certificates
+      OCIS_INSECURE: "true"
+
+      # OCIS_URL: the external domain / ip address of oCIS (with protocol, must always be https)
+      OCIS_URL: "https://localhost:9200"
+
+      # OCIS_LOG_LEVEL: error / info / ... / debug
+      OCIS_LOG_LEVEL: info
+
+      # admin user password, please change
+      IDM_ADMIN_PASSWORD: "secretadminpassword" # this overrides the admin password from the configuration file
+
+      # demo users
+      IDM_CREATE_DEMO_USERS: "false"
+      NATS_NATS_HOST: "0.0.0.0"
+    volumes:
+      # in the form <volume name>:<mount path in the container>
+      # or the more verbose syntax
+      #- type: volume
+      #  source: ocisdata # name of the volume
+      #  target: /var/lib/ocis # the mount path inside the container
+      - ocis-config:/etc/ocis
+      - ocis-data:/var/lib/ocis
+        # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
+    restart: always # or on-failure / unless-stopped
+
+    # https://docs.docker.com/config/containers/logging/configure/
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#logging
+    # the default log driver does no log rotation
+    # you can switch to the "local" log driver which does rotation by default
+    logging:
+      driver: local
+    # otherwise you could specify log rotation exlicitely
+    #  driver: "json-file" # this is the default driver
+    #  options:
+    #    max-size: "200k" # limit the size of the log file
+    #    max-file: "10" # limit the count of the log files
+    ports:
+      - 9200:9200
+    healthcheck:
+      test: ["CMD-SHELL", "ocis nats health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  ocis-audit:
+    image: owncloud/ocis:latest
+    environment:
+      AUDIT_EVENTS_ENDPOINT: "ocis:9233"
+      AUDIT_FILEPATH: "/var/lib/ocis/audit/audit.log"
+      AUDIT_LOG_TO_FILE: "true"
+    command: ["audit", "server"]
+    volumes:
+      # in the form <volume name>:<mount path in the container>
+      # or the more verbose syntax
+      #- type: volume
+      #  source: ocisdata # name of the volume
+      #  target: /var/lib/ocis # the mount path inside the container
+      - ocis-config:/etc/ocis
+      - type: bind
+        source: "./audit" 
+        target: "/var/lib/ocis/audit"
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
+    restart: always # or on-failure / unless-stopped
+    depends_on:
+      ocis:
+        condition: service_healthy
+
+    # https://docs.docker.com/config/containers/logging/configure/
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#logging
+    # the default log driver does no log rotation
+    # you can switch to the "local" log driver which does rotation by default
+    logging:
+      driver: local
+    # otherwise you could specify log rotation exlicitely
+    #  driver: "json-file" # this is the default driver
+    #  options:
+    #    max-size: "200k" # limit the size of the log file
+    #    max-file: "10" # limit the count of the log files
+
+
+# https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes
+# this declares the named volume with all default settings
+# you can also see the volume when running `docker volume list`
+volumes:
+  ocis-data:
+  ocis-config:
