@@ -3,10 +3,16 @@ Work on these topics as a group of ~3 people:
 - ssh onto your group's server
   - ssh commands:
     - group 1: `ssh admin@ocis.group1.storage-workshop.owncloud.works`
-    - group x: #TODO
+    - group 2: `ssh admin@ocis.group2.storage-workshop.owncloud.works`
+    - group 3: `ssh admin@ocis.group3.storage-workshop.owncloud.works`
+    - group 4: `ssh admin@ocis.group4.storage-workshop.owncloud.works`
+    - group 5: `ssh admin@ocis.group5.storage-workshop.owncloud.works`
+    - group 6: `ssh admin@ocis.group6.storage-workshop.owncloud.works`
+    - group 7: `ssh admin@ocis.group7.storage-workshop.owncloud.works`
+    - group 8: `ssh admin@ocis.group8.storage-workshop.owncloud.works`
 
 - run oCIS 2.0.0-beta2 with oCIS file system on local disk, see https://owncloud.dev/ocis/getting-started/#binaries
-- set OCIS_URL=`https://ocis.group<<X>>.storage-workshop.owncloud.works`
+- `export OCIS_URL=https://ocis.group<<X>>.storage-workshop.owncloud.works`
 - `export IDM_ADMIN_PASSWORD=admin` if you want to set the initial admin password to `admin`
 - `export PROXY_HTTP_ADDR=0.0.0.0:443` to make oCIS listen on the default https port
 - `sudo setcap CAP_NET_BIND_SERVICE=+eip ./ocis` to allow oCIS to bind to ports below 1024 without sudo
