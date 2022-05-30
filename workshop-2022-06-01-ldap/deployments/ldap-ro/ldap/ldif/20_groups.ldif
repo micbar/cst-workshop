@@ -1,0 +1,65 @@
+dn: ou=groups,dc=owncloud,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=users,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: users
+description: Users
+uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+uniqueMember: uid=moss,ou=users,dc=owncloud,dc=com
+uniqueMember: uid=admin,ou=users,dc=owncloud,dc=com
+
+dn: cn=sailing-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: sailing-lovers
+description: Sailing lovers
+uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+
+dn: cn=violin-haters,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: violin-haters
+description: Violin haters
+uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+
+dn: cn=radium-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: radium-lovers
+description: Radium lovers
+uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+
+dn: cn=polonium-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: polonium-lovers
+description: Polonium lovers
+uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+
+dn: cn=quantum-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: quantum-lovers
+description: Quantum lovers
+uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+
+dn: cn=philosophy-haters,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: philosophy-haters
+description: Philosophy haters
+uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+
+dn: cn=physics-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: physics-lovers
+description: Physics lovers
+uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com

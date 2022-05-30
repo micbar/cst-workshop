@@ -1,0 +1,3 @@
+dn: ou=groups,dc=owncloud,dc=com
+objectClass: organizationalUnit
+ou: groups
