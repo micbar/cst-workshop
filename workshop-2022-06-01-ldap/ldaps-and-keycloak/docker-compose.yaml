@@ -1,0 +1,158 @@
+---
+version: "3.7"
+
+services:
+  traefik:
+    image: traefik:v2.6
+    networks:
+      ocis-net:
+        aliases:
+          - ${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}
+    command:
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}"
+      # letsencrypt configuration
+      - "--certificatesResolvers.http.acme.email=${TRAEFIK_ACME_MAIL:-example@example.org}"
+      - "--certificatesResolvers.http.acme.storage=/certs/acme.json"
+      - "--certificatesResolvers.http.acme.httpChallenge.entryPoint=http"
+      # enable dashboard
+      - "--api.dashboard=true"
+      # define entrypoints
+      - "--entryPoints.http.address=:80"
+      - "--entryPoints.http.http.redirections.entryPoint.to=https"
+      - "--entryPoints.http.http.redirections.entryPoint.scheme=https"
+      - "--entryPoints.https.address=:443"
+      # docker provider (get configuration from container labels)
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedByDefault=false"
+      # file provider
+      - "--providers.file.directory=/config"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./config/traefik:/config"
+      - "certs:/certs"
+    environment:
+      OCIS_DOMAIN: ${OCIS_DOMAIN:-ocis.owncloud.test}
+    labels:
+      - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
+      - "traefik.http.routers.traefik.entrypoints=https"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik.tls.certresolver=http"
+      - "traefik.http.routers.traefik.service=api@internal"
+    logging:
+      driver: "local"
+    restart: always
+
+  ldap-server-ro:
+    image: osixia/openldap:latest
+    networks:
+      ocis-net:
+    command: --copy-service --loglevel debug
+    environment:
+      LDAP_TLS_VERIFY_CLIENT: never
+      LDAP_DOMAIN: owncloud.com
+      LDAP_ORGANISATION: ownCloud
+      LDAP_ADMIN_PASSWORD: adminpassword
+      LDAP_RFC2307BIS_SCHEMA: "true"
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+
+      LDAP_READONLY_USER: "true"
+      LDAP_READONLY_USER_USERNAME: ocis
+      LDAP_READONLY_USER_PASSWORD: servicepw
+    ports:
+      - "127.0.0.1:1389:389"
+      - "127.0.0.1:1636:636"
+    volumes:
+      - ./config/ldap-ro/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    logging:
+      driver: "local"
+    restart: always
+
+  ldap-server-rw:
+    image: osixia/openldap:latest
+    networks:
+      ocis-net:
+    command: --copy-service --loglevel debug
+    environment:
+      LDAP_TLS_VERIFY_CLIENT: never
+      LDAP_DOMAIN: owncloud.com
+      LDAP_ORGANISATION: ownCloud
+      LDAP_ADMIN_PASSWORD: adminpassword
+      LDAP_RFC2307BIS_SCHEMA: "true"
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+    ports:
+      - "127.0.0.1:2389:389"
+      - "127.0.0.1:2636:636"
+    volumes:
+      - ./config/ldap-rw/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    logging:
+      driver: "local"
+    restart: always
+
+  postgres:
+    image: postgres:alpine
+    networks:
+      ocis-net:
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    logging:
+      driver: "local"
+    restart: always
+
+  keycloak:
+    # Keycloak WildFly distribution, Quarkus is not ready yet for automatic setup https://github.com/keycloak/keycloak/issues/10216
+    image: quay.io/keycloak/keycloak:legacy
+    networks:
+      ocis-net:
+    entrypoint: ["/bin/sh", "/opt/jboss/tools/docker-entrypoint-override.sh"]
+    volumes:
+      - ./config/keycloak/docker-entrypoint-override.sh:/opt/jboss/tools/docker-entrypoint-override.sh
+      - ./config/keycloak/ocis-realm.dist.json:/opt/jboss/keycloak/ocis-realm.dist.json
+    environment:
+      OCIS_DOMAIN: ${OCIS_DOMAIN:-ocis.owncloud.test}
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: keycloak
+      KEYCLOAK_USER: ${KEYCLOAK_ADMIN_USER:-admin}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/ocis-realm.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.entrypoints=https"
+      - "traefik.http.routers.keycloak.rule=Host(`${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}`)"
+      - "traefik.http.routers.keycloak.tls.certresolver=http"
+      - "traefik.http.routers.keycloak.service=keycloak"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+      # let /.well-known/openid-configuration be served by Keycloak
+      #- "traefik.http.middlewares.idp-headers.headers.customrequestheaders.X-Forwarded-Host=${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}"
+      #- "traefik.http.middlewares.idp-prefix.addprefix.prefix=/auth/realms/${KEYCLOAK_REALM:-oCIS}"
+      #- "traefik.http.middlewares.idp-override.chain.middlewares=idp-headers,idp-prefix"
+      #- "traefik.http.routers.idp-wellknown.entrypoints=https"
+      #- "traefik.http.routers.idp-wellknown.tls.certresolver=http"
+      #- "traefik.http.routers.idp-wellknown.rule=Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`) && Path(`/.well-known/openid-configuration`)"
+      #- "traefik.http.routers.idp-wellknown.middlewares=idp-override"
+      #- "traefik.http.routers.idp-wellknown.service=keycloak"
+    depends_on:
+      - postgres
+    logging:
+      driver: "local"
+    restart: always
+
+volumes:
+  certs:
+  keycloak_postgres_data:
+
+networks:
+  ocis-net:
