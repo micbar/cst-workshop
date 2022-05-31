@@ -13,18 +13,19 @@
 ## Explore the internal LDAP (libregraph-idm)
 
 - start the oCIS as binary (daily edition from here https://download.owncloud.com/ocis/ocis/daily/, we need some unreleased bug fixes) in a default configuration, with following changes:
-  - expose port 9325 to allow accessing the internal LDAP server (TODO: not needed if we don't use containers for oCIS?)
   - set `export OCIS_URL=https://ocis.group<x>.ldap-workshop.owncloud.works`, this is the domain, for that Traefik will forward requests to oCIS (adapt to your group)
   - set `export PROXY_TLS=false` since we run oCIS behind Traefik, which does the SSL termination for us
-  - don't forget `ocis init` (we don't need insecure, since we have valid LetsEncrypt certificates through Traefik)
-  - check if you can access oCIS and log in using the demo users
-- use `ldapsearch` (on the host) to explore the default LDAP tree (#TODO add example here)
+  - don't forget `ocis init` (we don't need insecure, since we have valid LetsEncrypt certificates through Traefik. If you want a custom admin password, set it with the `--admin-password` option)
+  - enable demo users `export IDM_CREATE_DEMO_USERS=true`
+  - check if you can access oCIS and log in using the admin user
+- ` LDAPTLS_REQCERT=never` to disable ldap certificate checking for `ldapsearch`
+- use `ldapsearch` (on the host) to explore the default LDAP tree (see also https://owncloud.dev/extensions/idm/configuration_hints/#access-via-ldap-command-line-tools, eg. `ldapsearch -x -H ldaps://127.0.0.1:9235 -x -D uid=admin,ou=users,o=libregraph-idm -W -b o=libregraph-idm objectclass=inetorgperson`)
 - add some users/groups via the user management UI and use `ldapsearch` again
 - teardown this setup
 
 ## Setup oCIS with an external (read-only) LDAP server
 
-- LDAP server is listening for LDAPS connections on `localhost` port 1636:
+- an LDAP server is listening for LDAPS connections on `localhost` port 1636:
   - BaseDN: "dc=owncloud,dc=com"
   - Service User": "cn=ocis,dc=owncloud,dc=com"
   - Password for Service User": "servicepw"
@@ -38,13 +39,22 @@
     # Restrict the services to not start idm
     export OCIS_RUN_EXTENSIONS=app-registry,app-provider,audit,auth-basic,auth-bearer,auth-machine,frontend,gateway,graph,graph-explorer,groups,idp,nats,notifications,ocdav,ocs,proxy,search,settings,sharing,storage-system,storage-publiclink,storage-shares,storage-users,store,thumbnails,users,web,webdav
 ```
+- more configuration options can be found eg. here https://owncloud.dev/extensions/users/configuration/#environment-variables (stick to the `LDAP_*` settings, since these configure all extensions at once)
 
 - if the above is working try to reconfigure oCIS so that it only allows users of the group `physics-lovers` to use oCIS
   Hint: The ldap-server maintains an attribute "memberOf" on the user objects to list a user's groups memberships
 
 ## Setup oCIS with user autoprovsioning (using an external LDAP server)
-- start a new OpenLDAP server (with the owncloud Schema enabled)
-  - #TODO: create another docker-compose file for this LDAP config
-- start a prepopulated keycloak
-- Task: start oCIS using the prepopulated keycloak as the IDP, configure it autoprovsion accounts in the external LDAP
-        server.
+- another LDAP server is listening for LDAPS connections on `localhost` port 2636:
+  - BaseDN: "dc=owncloud,dc=com"
+  - Service User": "cn=admin,dc=owncloud,dc=com"
+  - Password for Service User": "adminpassword"
+  - Users BaseDN": "ou=users,dc=owncloud,dc=com"
+  - Group BaseDN": "ou=groups,dc=owncloud,dc=com"
+- use the prepopulated keycloak running at https://keycloak.group<x>.ldap-workshop.owncloud.works with the realm `oCIS` -> `export OCIS_OIDC_ISSUER=https://keycloak.group<x>.ldap-workshop.owncloud.works/auth/realms/oCIS`
+- enable user autoprovisioning in the proxy (https://owncloud.dev/extensions/proxy/configuration/)
+  - ```bash
+    # Restrict the services to not start idm and idp
+    export OCIS_RUN_EXTENSIONS=app-registry,app-provider,audit,auth-basic,auth-bearer,auth-machine,frontend,gateway,graph,graph-explorer,groups,nats,notifications,ocdav,ocs,proxy,search,settings,sharing,storage-system,storage-publiclink,storage-shares,storage-users,store,thumbnails,users,web,webdav
+```
+- login to the Keycloak admin UI ( https://keycloak.group<x>.ldap-workshop.owncloud.works, user: admin, password: admin) and add your own user
