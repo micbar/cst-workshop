@@ -1,0 +1,13 @@
+export OCIS_OIDC_ISSUER="https://keycloak.group<x>.ldap-workshop.owncloud.works/auth/realms/oCIS"
+export PROXY_TLS=false
+export OCIS_URL="https://ocis.group<x>.ldap-workshop.owncloud.works"
+# Restrict the services to not start idm and idp
+export OCIS_RUN_EXTENSIONS=app-registry,app-provider,audit,auth-basic,auth-bearer,auth-machine,frontend,gateway,graph,graph-explorer,groups,nats,notifications,ocdav,ocs,proxy,search,settings,sharing,storage-system,storage-publiclink,storage-shares,storage-users,store,thumbnails,users,web,webdav
+# enable user autoprovisioning in the proxy (https://owncloud.dev/extensions/proxy/configuration/) 
+export PROXY_AUTOPROVISION_ACCOUNTS="true"
+export LDAP_URI=ldaps://localhost:2636
+export LDAP_INSECURE=true
+export LDAP_BIND_DN=cn=admin,dc=owncloud,dc=com
+export LDAP_BIND_PASSWORD=adminpassword
+export LDAP_USER_BASE_DN=ou=users,dc=owncloud,dc=com
+export LDAP_GROUP_BASE_DN=ou=groups,dc=owncloud,dc=com
