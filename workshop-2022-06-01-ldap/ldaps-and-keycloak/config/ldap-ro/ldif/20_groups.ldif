@@ -1,0 +1,65 @@
+dn: ou=groups,dc=owncloud,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=users,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: users
+description: Users
+member: uid=einstein,ou=users,dc=owncloud,dc=com
+member: uid=marie,ou=users,dc=owncloud,dc=com
+member: uid=richard,ou=users,dc=owncloud,dc=com
+member: uid=moss,ou=users,dc=owncloud,dc=com
+member: uid=admin,ou=users,dc=owncloud,dc=com
+
+dn: cn=sailing-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: sailing-lovers
+description: Sailing lovers
+member: uid=einstein,ou=users,dc=owncloud,dc=com
+
+dn: cn=violin-haters,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: violin-haters
+description: Violin haters
+member: uid=einstein,ou=users,dc=owncloud,dc=com
+
+dn: cn=radium-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: radium-lovers
+description: Radium lovers
+member: uid=marie,ou=users,dc=owncloud,dc=com
+
+dn: cn=polonium-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: polonium-lovers
+description: Polonium lovers
+member: uid=marie,ou=users,dc=owncloud,dc=com
+
+dn: cn=quantum-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: quantum-lovers
+description: Quantum lovers
+member: uid=richard,ou=users,dc=owncloud,dc=com
+
+dn: cn=philosophy-haters,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: philosophy-haters
+description: Philosophy haters
+member: uid=richard,ou=users,dc=owncloud,dc=com
+
+dn: cn=physics-lovers,ou=groups,dc=owncloud,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: physics-lovers
+description: Physics lovers
+member: uid=einstein,ou=users,dc=owncloud,dc=com
+member: uid=marie,ou=users,dc=owncloud,dc=com
+member: uid=richard,ou=users,dc=owncloud,dc=com

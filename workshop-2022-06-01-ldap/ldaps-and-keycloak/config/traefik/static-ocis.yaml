@@ -1,0 +1,15 @@
+http:
+  routers:
+    ocis:
+      entrypoints:
+        - https
+      tls:
+        certresolver: http
+      rule: Host(`{{env "OCIS_DOMAIN"}}`)
+      service: ocis
+
+  services:
+    ocis:
+      loadBalancer:
+        servers:
+          - url: http://172.17.0.1:9200
